@@ -1,0 +1,282 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.hero {
+  background: linear-gradient(135deg, #60a5fa, #22c55e);
+  color: white;
+  padding: 32px;
+  border-radius: 18px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  margin: 0 0 10px;
+  font-size: 2.4rem;
+}
+
+.hero p {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.location-card,
+.risk-card,
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.risk-level {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #d97706;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card h3,
+.location-card h2,
+.risk-card h2 {
+  margin-top: 0;
+}
+
+.recommendations ul {
+  padding-left: 20px;
+  margin-bottom: 0;
+}
+
+.recommendations li {
+  margin-bottom: 10px;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+.location-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.manual-location {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.manual-location input {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  min-width: 220px;
+}
+
+.allergy-diary {
+  margin-top: 20px;
+}
+
+.allergy-diary p {
+  margin-bottom: 0;
+}
+
+.diary-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.diary-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.diary-form input,
+.diary-form textarea {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: Arial, sans-serif;
+}
+
+.diary-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.diary-message {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.navbar {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.navbar-links a:hover {
+  color: #1d4ed8;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.auth-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+.auth-card h1 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.auth-card p {
+  margin-bottom: 20px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.auth-form input {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: Arial, sans-serif;
+}
+
+.auth-switch {
+  margin-top: 20px;
+}
+
+.auth-switch a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-switch a:hover {
+  color: #1d4ed8;
+}
+#root {
+  width: 100%;
+}
+
+.auth-message {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logout-button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.logout-button:hover {
+  background: #dc2626;
+}
