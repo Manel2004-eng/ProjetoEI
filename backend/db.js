@@ -1,11 +1,15 @@
+
+
 const { Pool } = require("pg");
+require("dotenv").config();
+
+console.log("DATABASE_URL exists?", !!process.env.DATABASE_URL);
 
 const pool = new Pool({
-  user: "manuel",
-  host: "localhost",
-  database: "allergy_app",
-  password: "1234",
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 module.exports = pool;

@@ -335,13 +335,19 @@ app.post("/api/login", async (req, res) => {
 
 app.get("/api/users", async (req, res) => {
   try {
-   const result = await pool.query(
-  "SELECT id, name, email, role, doctor_request, created_at FROM users ORDER BY created_at DESC"
-);
+    const result = await pool.query(
+      "SELECT id, name, email, role, doctor_request, created_at FROM users ORDER BY created_at DESC"
+    );
 
     res.json(result.rows);
   } catch (error) {
-    console.error("Erro ao obter utilizadores:", error.message);
+    console.error("Erro ao obter utilizadores:");
+    console.error("message:", error.message);
+    console.error("code:", error.code);
+    console.error("detail:", error.detail);
+    console.error("hint:", error.hint);
+    console.error("stack:", error.stack);
+
     res.status(500).json({
       error: "Erro ao obter utilizadores.",
     });
@@ -647,6 +653,61 @@ app.get("/api/patients/:patientId/feedback", async (req, res) => {
     console.error("Erro ao obter feedback do utente:", error.message);
     res.status(500).json({
       error: "Erro ao obter feedback do utente.",
+    });
+  }
+});
+
+app.get("/api/patients/:patientId/feedback", async (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    const result = await pool.query(
+      `
+      SELECT df.id, df.feedback, df.created_at, u.name AS doctor_name, u.email AS doctor_email
+      FROM doctor_feedback df
+      JOIN users u ON df.doctor_id = u.id
+      WHERE df.patient_id = $1
+      ORDER BY df.created_at DESC
+      `,
+      [patientId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Erro ao obter feedback do utente:", error.message);
+    res.status(500).json({
+      error: "Erro ao obter feedback do utente.",
+    });
+  }
+});
+
+app.delete("/api/doctors/:doctorId/patients/:patientId", async (req, res) => {
+  try {
+    const { doctorId, patientId } = req.params;
+
+    const result = await pool.query(
+      `
+      DELETE FROM doctor_patients
+      WHERE doctor_id = $1 AND patient_id = $2
+      RETURNING *
+      `,
+      [doctorId, patientId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: "Associação entre médico e utente não encontrada.",
+      });
+    }
+
+    res.json({
+      message: "Utente removido com sucesso do médico.",
+      relation: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Erro ao remover utente do médico:", error.message);
+    res.status(500).json({
+      error: "Erro ao remover utente do médico.",
     });
   }
 });
