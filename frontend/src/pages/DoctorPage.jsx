@@ -42,7 +42,7 @@ function DoctorPage() {
   };
 
   const fetchAvailablePatients = () => {
-    fetch("import.meta.env.VITE_API_URL/api/available-patients")
+    fetch(`${import.meta.env.VITE_API_URL}/api/available-patients`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter utentes disponíveis.");

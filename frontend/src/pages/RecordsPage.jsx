@@ -14,7 +14,7 @@ function RecordsPage() {
     setLoading(true);
     setError("");
 
-    fetch("import.meta.env.VITE_API_URL/api/diary")
+    fetch(`${import.meta.env.VITE_API_URL}/api/diary`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter registos.");
