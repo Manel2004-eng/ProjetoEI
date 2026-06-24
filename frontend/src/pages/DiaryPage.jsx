@@ -18,7 +18,7 @@ function DiaryPage() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    fetch("import.meta.env.VITE_API_URL/api/dashboard?city=Covilhã")
+    fetch(`${import.meta.env.VITE_API_URL}/api/dashboard?city=Covilhã`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter cidade atual.");
@@ -79,7 +79,7 @@ function DiaryPage() {
   medication: diaryMedication,
   notes: diaryNotes,
 };
-    fetch("import.meta.env.VITE_API_URL/api/diary", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/diary`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

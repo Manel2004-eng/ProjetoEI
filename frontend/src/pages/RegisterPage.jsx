@@ -24,7 +24,7 @@ function RegisterPage() {
       return;
     }
 
-    fetch("import.meta.env.VITE_API_URL/api/register", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
