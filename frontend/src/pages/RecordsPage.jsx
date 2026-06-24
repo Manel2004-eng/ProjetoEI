@@ -14,7 +14,7 @@ function RecordsPage() {
     setLoading(true);
     setError("");
 
-    fetch("http://localhost:5000/api/diary")
+    fetch("import.meta.env.VITE_API_URL/api/diary")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter registos.");
@@ -36,7 +36,7 @@ function RecordsPage() {
   const fetchFeedback = () => {
     setFeedbackLoading(true);
 
-    fetch(`http://localhost:5000/api/patients/${user.id}/feedback`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/patients/${user.id}/feedback`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter feedback.");

@@ -25,7 +25,7 @@ function DoctorPage() {
   const fetchPatients = () => {
     if (!user?.id) return;
 
-    fetch(`http://localhost:5000/api/doctors/${user.id}/patients`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/doctors/${user.id}/patients`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter utentes.");
@@ -42,7 +42,7 @@ function DoctorPage() {
   };
 
   const fetchAvailablePatients = () => {
-    fetch("http://localhost:5000/api/available-patients")
+    fetch("import.meta.env.VITE_API_URL/api/available-patients")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter utentes disponíveis.");
@@ -59,11 +59,10 @@ function DoctorPage() {
   };
 
   const fetchPatientRecords = (patient) => {
-    setSelectedPatient(patient);
     setRecordsLoading(true);
     setError("");
 
-    fetch(`http://localhost:5000/api/doctors/${user.id}/patients/${patient.id}/records`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/doctors/${user.id}/patients/${patient.id}/records`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter registos do utente.");
@@ -85,7 +84,7 @@ function DoctorPage() {
     setFeedbackLoading(true);
     setError("");
 
-    fetch(`http://localhost:5000/api/doctors/${user.id}/patients/${patient.id}/feedback`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/doctors/${user.id}/patients/${patient.id}/feedback`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter feedback do utente.");
@@ -111,15 +110,11 @@ function DoctorPage() {
   };
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      setError("");
-      fetchPatients();
-      fetchAvailablePatients();
-      setLoading(false);
-    };
-
-    loadData();
+    setLoading(true);
+    setError("");
+    fetchPatients();
+    fetchAvailablePatients();
+    setLoading(false);
   }, []);
 
   const handleAddPatient = () => {
@@ -131,7 +126,7 @@ function DoctorPage() {
       return;
     }
 
-    fetch(`http://localhost:5000/api/doctors/${user.id}/patients`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/doctors/${user.id}/patients`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -170,13 +165,16 @@ function DoctorPage() {
       return;
     }
 
-    fetch(`http://localhost:5000/api/doctors/${user.id}/patients/${selectedPatient.id}/feedback`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ feedback: newFeedback }),
-    })
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/doctors/${user.id}/patients/${selectedPatient.id}/feedback`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ feedback: newFeedback }),
+      }
+    )
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {
@@ -195,6 +193,37 @@ function DoctorPage() {
       });
   };
 
+  const handleRemovePatient = (patientId) => {
+    setMessage("");
+    setError("");
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/doctors/${user.id}/patients/${patientId}`, {
+      method: "DELETE",
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Erro ao remover utente.");
+        }
+        return data;
+      })
+      .then(() => {
+        setMessage("Utente removido com sucesso.");
+        fetchPatients();
+
+        if (selectedPatient && selectedPatient.id === patientId) {
+          setSelectedPatient(null);
+          setPatientRecords([]);
+          setPatientFeedback([]);
+          setNewFeedback("");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(err.message || "Não foi possível remover o utente.");
+      });
+  };
+
   return (
     <div className="bg-slate-50 text-slate-900 min-h-screen">
       <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm">
@@ -207,16 +236,28 @@ function DoctorPage() {
 
           <div className="hidden md:flex items-center gap-8">
             <nav className="flex gap-6">
-              <Link className="text-slate-500 hover:text-blue-500 transition-colors py-1" to="/dashboard">
+              <Link
+                className="text-slate-500 hover:text-blue-500 transition-colors py-1"
+                to="/dashboard"
+              >
                 Dashboard
               </Link>
-              <Link className="text-slate-500 hover:text-blue-500 transition-colors py-1" to="/diary">
+              <Link
+                className="text-slate-500 hover:text-blue-500 transition-colors py-1"
+                to="/diary"
+              >
                 Daily Planner
               </Link>
-              <Link className="text-slate-500 hover:text-blue-500 transition-colors py-1" to="/records">
+              <Link
+                className="text-slate-500 hover:text-blue-500 transition-colors py-1"
+                to="/records"
+              >
                 Records
               </Link>
-              <Link className="text-blue-600 border-b-2 border-blue-600 py-1" to="/doctor">
+              <Link
+                className="text-blue-600 border-b-2 border-blue-600 py-1"
+                to="/doctor"
+              >
                 Doctor
               </Link>
             </nav>
@@ -240,7 +281,9 @@ function DoctorPage() {
         <div className="px-6 mb-6">
           <div className="flex items-center gap-3 mb-1">
             <span className="text-blue-600 text-2xl">✚</span>
-            <span className="text-lg font-extrabold text-blue-600">Health Guard</span>
+            <span className="text-lg font-extrabold text-blue-600">
+              Health Guard
+            </span>
           </div>
           <p className="text-xs text-slate-500">Managing your environment</p>
         </div>
@@ -286,7 +329,9 @@ function DoctorPage() {
       <main className="lg:ml-64 pt-24 px-6 pb-12">
         <div className="max-w-[1200px] mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900">Painel do Médico</h1>
+            <h1 className="text-4xl font-bold text-slate-900">
+              Painel do Médico
+            </h1>
             <p className="text-slate-500 mt-2">
               Aqui podes gerir apenas os teus próprios utentes.
             </p>
@@ -308,33 +353,53 @@ function DoctorPage() {
             <section className="lg:col-span-8 space-y-6">
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-slate-900">Os meus utentes</h2>
-                  <span className="text-sm text-slate-500">{patients.length} utente(s)</span>
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Os meus utentes
+                  </h2>
+                  <span className="text-sm text-slate-500">
+                    {patients.length} utente(s)
+                  </span>
                 </div>
 
                 {loading ? (
                   <p className="text-slate-500">A carregar utentes...</p>
                 ) : patients.length === 0 ? (
-                  <p className="text-slate-500">Ainda não tens utentes associados.</p>
+                  <p className="text-slate-500">
+                    Ainda não tens utentes associados.
+                  </p>
                 ) : (
                   <div className="space-y-4">
                     {patients.map((patient) => (
                       <div
                         key={patient.id}
-                        className="border border-slate-200 rounded-xl p-5 bg-slate-50 cursor-pointer hover:bg-blue-50 transition-colors"
-                        onClick={() => handleSelectPatient(patient)}
+                        className="border border-slate-200 rounded-xl p-5 bg-slate-50"
                       >
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                          <div>
+                          <div
+                            className="cursor-pointer flex-1"
+                            onClick={() => handleSelectPatient(patient)}
+                          >
                             <h3 className="text-lg font-semibold text-slate-900">
                               {patient.name}
                             </h3>
                             <p className="text-slate-500">{patient.email}</p>
                           </div>
 
-                          <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold w-fit">
-                            ver detalhes
-                          </span>
+                          <div className="flex gap-2 flex-wrap">
+                            <button
+                              onClick={() => handleSelectPatient(patient)}
+                              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                            >
+                              Selecionar
+                            </button>
+
+                            <button
+                              onClick={() => handleRemovePatient(patient.id)}
+                              className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
+                            >
+                              Remover
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -345,7 +410,9 @@ function DoctorPage() {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-slate-900">
-                    {selectedPatient ? `Registos de ${selectedPatient.name}` : "Registos do utente"}
+                    {selectedPatient
+                      ? `Registos de ${selectedPatient.name}`
+                      : "Registos do utente"}
                   </h2>
                 </div>
 
@@ -356,7 +423,9 @@ function DoctorPage() {
                 ) : recordsLoading ? (
                   <p className="text-slate-500">A carregar registos...</p>
                 ) : patientRecords.length === 0 ? (
-                  <p className="text-slate-500">Este utente ainda não tem registos.</p>
+                  <p className="text-slate-500">
+                    Este utente ainda não tem registos.
+                  </p>
                 ) : (
                   <div className="space-y-4">
                     {patientRecords.map((record) => (
@@ -380,15 +449,27 @@ function DoctorPage() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                          <p><strong>Espirros:</strong> {record.sneezing || 0}/10</p>
-                          <p><strong>Olhos irritados:</strong> {record.itchy_eyes || 0}/10</p>
-                          <p><strong>Congestão nasal:</strong> {record.nasal_congestion || 0}/10</p>
-                          <p><strong>Tosse:</strong> {record.cough || 0}/10</p>
-                          <p className="md:col-span-2">
-                            <strong>Medicação:</strong> {record.medication || "Nenhuma"}
+                          <p>
+                            <strong>Espirros:</strong> {record.sneezing || 0}/10
+                          </p>
+                          <p>
+                            <strong>Olhos irritados:</strong>{" "}
+                            {record.itchy_eyes || 0}/10
+                          </p>
+                          <p>
+                            <strong>Congestão nasal:</strong>{" "}
+                            {record.nasal_congestion || 0}/10
+                          </p>
+                          <p>
+                            <strong>Tosse:</strong> {record.cough || 0}/10
                           </p>
                           <p className="md:col-span-2">
-                            <strong>Observações:</strong> {record.notes || "Sem observações."}
+                            <strong>Medicação:</strong>{" "}
+                            {record.medication || "Nenhuma"}
+                          </p>
+                          <p className="md:col-span-2">
+                            <strong>Observações:</strong>{" "}
+                            {record.notes || "Sem observações."}
                           </p>
                         </div>
                       </div>
@@ -400,7 +481,9 @@ function DoctorPage() {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-slate-900">
-                    {selectedPatient ? `Feedback para ${selectedPatient.name}` : "Feedback médico"}
+                    {selectedPatient
+                      ? `Feedback para ${selectedPatient.name}`
+                      : "Feedback médico"}
                   </h2>
                 </div>
 
@@ -438,7 +521,9 @@ function DoctorPage() {
                       {feedbackLoading ? (
                         <p className="text-slate-500">A carregar feedback...</p>
                       ) : patientFeedback.length === 0 ? (
-                        <p className="text-slate-500">Ainda não existe feedback para este utente.</p>
+                        <p className="text-slate-500">
+                          Ainda não existe feedback para este utente.
+                        </p>
                       ) : (
                         <div className="space-y-4">
                           {patientFeedback.map((item) => (
@@ -469,7 +554,9 @@ function DoctorPage() {
                     <p className="text-blue-100 text-sm font-medium uppercase tracking-wider mb-1">
                       Médico autenticado
                     </p>
-                    <h4 className="text-2xl font-bold">{user?.name || "Doctor"}</h4>
+                    <h4 className="text-2xl font-bold">
+                      {user?.name || "Doctor"}
+                    </h4>
                   </div>
                   <span className="text-4xl text-blue-200/50">🩺</span>
                 </div>
@@ -477,7 +564,9 @@ function DoctorPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center bg-white/10 p-3 rounded-xl">
                     <span className="text-sm">Email</span>
-                    <span className="font-bold text-right">{user?.email || "-"}</span>
+                    <span className="font-bold text-right">
+                      {user?.email || "-"}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center bg-white/10 p-3 rounded-xl">
@@ -488,7 +577,9 @@ function DoctorPage() {
               </div>
 
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <h4 className="text-lg font-semibold mb-4 text-slate-900">Adicionar utente</h4>
+                <h4 className="text-lg font-semibold mb-4 text-slate-900">
+                  Adicionar utente
+                </h4>
 
                 <div className="space-y-4">
                   <select
@@ -514,9 +605,12 @@ function DoctorPage() {
               </div>
 
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <h4 className="text-lg font-semibold mb-4 text-slate-900">Resumo</h4>
+                <h4 className="text-lg font-semibold mb-4 text-slate-900">
+                  Resumo
+                </h4>
                 <p className="text-slate-500 text-sm leading-relaxed">
-                  Nesta área tens acesso apenas aos teus próprios utentes, aos registos deles e ao feedback que fores deixando.
+                  Nesta área tens acesso apenas aos teus próprios utentes, aos
+                  registos deles e ao feedback que fores deixando.
                 </p>
               </div>
             </aside>

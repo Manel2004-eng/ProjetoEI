@@ -17,7 +17,7 @@ function DashboardPage() {
     setLoading(true);
     setError("");
 
-    fetch(`http://localhost:5000/api/dashboard?city=${encodeURIComponent(city)}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/dashboard?city=${encodeURIComponent(city)}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter dados do dashboard.");

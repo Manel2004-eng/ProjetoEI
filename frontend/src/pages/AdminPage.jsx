@@ -13,7 +13,7 @@ function AdminPage() {
     setLoading(true);
     setError("");
 
-    fetch("http://localhost:5000/api/users")
+    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erro ao obter utilizadores.");
@@ -43,7 +43,7 @@ function AdminPage() {
   const handleApproveDoctor = (userId) => {
     setMessage("");
 
-    fetch(`http://localhost:5000/api/users/${userId}/role`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}/role`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ function AdminPage() {
   const handleRejectDoctor = (userId) => {
     setMessage("");
 
-    fetch(`http://localhost:5000/api/users/${userId}/role`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}/role`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
