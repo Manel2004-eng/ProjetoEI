@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const pool = require("./db");
-
+const bcrypt = require("bcrypt");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -266,13 +266,15 @@ app.post("/api/register", async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const result = await pool.query(
       `
       INSERT INTO users (name, email, password, role, doctor_request)
       VALUES ($1, $2, $3, 'user', $4)
       RETURNING id, name, email, role, doctor_request, created_at
       `,
-      [name, email, password, wantsDoctor === true]
+      [name, email, hashedPassword, wantsDoctor === true]
     );
 
     res.status(201).json({
@@ -286,7 +288,6 @@ app.post("/api/register", async (req, res) => {
     });
   }
 });
-
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -310,7 +311,9 @@ app.post("/api/login", async (req, res) => {
 
     const user = result.rows[0];
 
-    if (user.password !== password) {
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
       return res.status(401).json({
         error: "Credenciais inválidas.",
       });
